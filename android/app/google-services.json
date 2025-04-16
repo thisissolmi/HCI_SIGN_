@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "1007212016598",
+    "project_id": "hci-sign-a189c",
+    "storage_bucket": "hci-sign-a189c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007212016598:android:59621cde0476c4d33fea77",
+        "android_client_info": {
+          "package_name": "com.example.hci_sign"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007212016598-uaank2etaencv2sbls0glgm73i6dp09p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzxTPBNFdaIximn55sGdq0zZBhwnBsdUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007212016598-uaank2etaencv2sbls0glgm73i6dp09p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1007212016598-to1h0kbn0a48d5g97tj2a6l5b8soemf8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hciSign"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007212016598:android:8681c974b9f8f9533fea77",
+        "android_client_info": {
+          "package_name": "com.example.hcifive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007212016598-uaank2etaencv2sbls0glgm73i6dp09p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzxTPBNFdaIximn55sGdq0zZBhwnBsdUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007212016598-uaank2etaencv2sbls0glgm73i6dp09p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1007212016598-to1h0kbn0a48d5g97tj2a6l5b8soemf8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hciSign"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
