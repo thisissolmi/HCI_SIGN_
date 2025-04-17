@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
+import 'package:hci_sign/pages/home.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -11,6 +13,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  final FocusNode _focusNode = FocusNode();
 
   final List<Map<String, String>> onboardingData = [
     {'number': '1', 'title': 'click', 'desc': '단 한 번의 클릭으로'},
@@ -18,6 +21,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {'number': '3', 'title': 'sec', 'desc': '3초면 충분, 빠르고 간편하게'},
     {'number': '4', 'title': 'you', 'desc': '오직 당신을 위한 온보딩 아카이빙'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   Future<void> _signInWithGoogle() async {
     try {
@@ -40,10 +56,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           SnackBar(content: Text('환영합니다, ${user.displayName}님!')),
         );
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HomeScreen()),
+        // );
       }
     } catch (e) {
       print('로그인 오류: $e');
@@ -56,46 +72,66 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            itemCount: onboardingData.length + 1,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              if (index == onboardingData.length) {
-                return _buildFinalPage();
-              } else {
-                return _buildOnboardingPage(onboardingData[index]);
-              }
-            },
-          ),
-          Positioned(
-            bottom: 30,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                onboardingData.length + 1,
-                (index) => AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentPage == index ? 16 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: _currentPage == index ? Colors.blue : Colors.grey,
-                    borderRadius: BorderRadius.circular(4),
+      body: RawKeyboardListener(
+        focusNode: _focusNode,
+        onKey: (event) {
+          if (event is RawKeyDownEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+                _currentPage < onboardingData.length) {
+              _pageController.nextPage(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+                _currentPage > 0) {
+              _pageController.previousPage(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+          }
+        },
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
+              itemCount: onboardingData.length + 1,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                if (index == onboardingData.length) {
+                  return _buildFinalPage();
+                } else {
+                  return _buildOnboardingPage(onboardingData[index]);
+                }
+              },
+            ),
+            Positioned(
+              bottom: 30,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  onboardingData.length + 1,
+                  (index) => AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    width: _currentPage == index ? 16 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: _currentPage == index ? Colors.blue : Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -176,6 +212,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: TextStyle(fontSize: 20),
           ),
           SizedBox(height: 30),
+
+          // ✅ Google 로그인 버튼
           ElevatedButton.icon(
             icon: Icon(Icons.login),
             label: Text('Google로 시작하기'),
@@ -186,25 +224,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
             onPressed: _signInWithGoogle,
-          )
+          ),
+
+          SizedBox(height: 12),
+
+          // ✅ 홈페이지 이동 버튼
+          ElevatedButton.icon(
+            icon: Icon(Icons.home),
+            label: Text('홈페이지로 이동'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            },
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
-    return Scaffold(
-      appBar: AppBar(title: Text('홈')),
-      body: Center(
-        child: Text(
-          '어서오세요, ${user?.displayName ?? '사용자'}님!',
-          style: TextStyle(fontSize: 20),
-        ),
       ),
     );
   }
